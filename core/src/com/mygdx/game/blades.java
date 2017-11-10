@@ -1,3 +1,4 @@
-public class blades{
-    
+package com.mygdx.game;
+
+public class blades {
 }

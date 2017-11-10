@@ -15,8 +15,8 @@ public class DustGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		playerI = new Texture("CCsprite.psd");
-		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 38);
+		playerI = new Texture("CCsprite.png");
+		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 40);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class DustGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(playerSheetPos, screen.getScreenWidth()/2, screen.getScreenHeight()/2);
+		batch.draw(playerSheetPos, screen.getScreenWidth()/2 - 11, screen.getScreenHeight()/2 - 20);
 		batch.end();
 	}
 	
