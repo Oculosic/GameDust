@@ -5,15 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DustGame extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img;
+	Texture playerI;
+	TextureRegion playerSheetPos;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		playerI = new Texture("CCsprite.psd");
+		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 38);
 	}
 
 	@Override
@@ -21,13 +24,13 @@ public class DustGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, 0, 0);
+		batch.draw(playerSheetPos, screen.getScreenWidth()/2, screen.getScreenHeight()/2);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		playerI.dispose();
 	}
 }
