@@ -8,29 +8,38 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DustGame extends ApplicationAdapter {
-	SpriteBatch batch;
+	SpriteBatch player;
 	Texture playerI;
 	TextureRegion playerSheetPos;
+	SpriteBatch dagger;
+	Texture daggerI
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
+		player = new SpriteBatch();
 		playerI = new Texture("CCsprite.png");
 		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 40);
+		dagger = new SpriteBatch();
+		daggerI = new Texture("THETRUEKNIFE.png");
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(playerSheetPos, screen.getScreenWidth()/2 - 11, screen.getScreenHeight()/2 - 20);
-		batch.end();
+		player.begin();
+		player.draw(playerSheetPos, screen.getScreenWidth()/2 - 11, screen.getScreenHeight()/2 - 20);
+		player.end();
+		dagger.begin();
+		dagger.draw();
+		dagger.end();
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
+		player.dispose();
 		playerI.dispose();
+		dagger.dispose();
+		daggerI.dispose();
 	}
 }
