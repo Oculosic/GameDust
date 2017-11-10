@@ -1,4 +1,6 @@
-package com.mygdx.game;
+public class blades{
+    int dmg = 5;
 
-public class blades {
 }
+
+
