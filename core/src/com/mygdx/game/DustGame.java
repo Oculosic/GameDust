@@ -9,11 +9,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.Iterator;
 
 public class DustGame extends ApplicationAdapter {
 	SpriteBatch player;
 	Texture playerI;
 	TextureRegion playerSheetPos;
+	Texture monsterTexture;
 	SpriteBatch dagger;
 	Texture daggerI;
 	static final int WORLD_WIDTH = 1000;
@@ -25,10 +32,12 @@ public class DustGame extends ApplicationAdapter {
 	int cameraYPos;
 	float w;
 	float h;
-	float playerXpos;
-	float playerYpos;
+	public float playerXpos;
+	public float playerYpos;
 	int playerXTextOffset;
 	int playerYTextOffset;
+	Array<Rectangle> monsters;
+	long lastSpawnTime;
 
 
 
@@ -39,15 +48,17 @@ public class DustGame extends ApplicationAdapter {
 		mapSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-
 		cam = new OrthographicCamera(30, 30 * (h / w));
 		cam.update();
 		world = new SpriteBatch();
+		monsterTexture = new Texture("monster.png");
 		player = new SpriteBatch();
 		playerI = new Texture("CCsprite.png");
 		playerSheetPos = new TextureRegion(playerI, 66, 0, 22, 38);
 		dagger = new SpriteBatch();
 		daggerI = new Texture("THETRUEKNIFE.png");
+		monsters = new Array<Rectangle>();
+		spawnAttempt();
 	}
 
 	@Override
@@ -61,16 +72,26 @@ public class DustGame extends ApplicationAdapter {
 	public void render () {
 		handleInput();
 		cam.update();
-		System.out.println(playerXTextOffset);
-		playerSheetPos.setRegion(playerXTextOffset, 0, 22, 38);
+		playerSheetPos.setRegion(playerXTextOffset, playerYTextOffset, 22, 38);
 		playerXpos = (cameraXPos + cameraYPos + screen.getScreenWidth())/2 -11;
 		playerYpos = (cameraYPos + cameraYPos + screen.getScreenHeight())/2 - 19;
 		world.setProjectionMatrix(cam.combined);
+		spawnAttempt();
+		Iterator<Rectangle> iter = monsters.iterator();
+		while(iter.hasNext()){
+			Rectangle monster = iter.next();
+			monster.x += playerXpos/6;
+			monster.y += playerYpos/6;
+		}
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		world.begin();
+		for(Rectangle monster: monsters){
+			world.draw(monsterTexture, monster.x, monster.y);
+		}
 		mapSprite.draw(world);
 		world.end();
+
 		player.begin();
 		player.draw(playerSheetPos, playerXpos, playerYpos);
 		player.end();
@@ -98,7 +119,41 @@ public class DustGame extends ApplicationAdapter {
 			playerXTextOffset = 0;
 		}
 	}
-	
+
+	void spawnAttempt(){
+		if(TimeUtils.millis() - lastSpawnTime > 1000000000){
+			boolean isSpawnXValid = false;
+			boolean isSpawnYValid = false;
+			float spawnX = MathUtils.random(playerXpos - 50, playerXpos + 50);
+			float spawnY = MathUtils.random(playerYpos - 50, playerYpos + 50);
+			while(isSpawnXValid == false && isSpawnYValid == false){
+				if(spawnX >= (playerXpos - 30) && (spawnX <= (playerXpos + 30))){
+					spawnX = MathUtils.random(playerXpos - 50, playerXpos + 50);
+				}
+				else{
+					isSpawnXValid = true;
+				}
+				if(spawnY >= (playerYpos - 30) && (spawnY <= (playerYpos + 30))){
+					spawnY = MathUtils.random(playerYpos - 50, playerYpos + 50);
+				}
+				else{
+					isSpawnYValid = true;
+				}
+			}
+			spawnMonster(spawnX, spawnY);
+		}
+	}
+
+	void spawnMonster(float monsterSpawnX, float monsterSpawnY){
+		Rectangle monster = new Rectangle();
+		monster.x = monsterSpawnX;
+		monster.y = monsterSpawnY;
+		monster.height = 16;
+		monster.width = 9;
+		monsters.add(monster);
+		lastSpawnTime = TimeUtils.millis();
+	}
+
 	@Override
 	public void dispose () {
 		player.dispose();
