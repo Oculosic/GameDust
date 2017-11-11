@@ -27,9 +27,9 @@ public class DustGame extends ApplicationAdapter {
 	float h;
 	float playerXpos;
 	float playerYpos;
-	int playerDir;
 	int playerXTextOffset;
 	int playerYTextOffset;
+
 
 
 	@Override
@@ -45,25 +45,7 @@ public class DustGame extends ApplicationAdapter {
 		world = new SpriteBatch();
 		player = new SpriteBatch();
 		playerI = new Texture("CCsprite.png");
-		switch(playerDir){
-			case 0:
-				playerXTextOffset = 0;
-				playerYTextOffset = 0;
-				break;
-			case 90:
-				playerXTextOffset = 0;
-				playerYTextOffset = 0;
-				break;
-			case 180:
-				playerXTextOffset = 0;
-				playerYTextOffset = 0;
-				break;
-			case 270:
-				playerXTextOffset = 0;
-				playerYTextOffset = 0;
-				break;
-		}
-		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 38);
+		playerSheetPos = new TextureRegion(playerI, 66, 0, 22, 38);
 		dagger = new SpriteBatch();
 		daggerI = new Texture("THETRUEKNIFE.png");
 	}
@@ -79,6 +61,8 @@ public class DustGame extends ApplicationAdapter {
 	public void render () {
 		handleInput();
 		cam.update();
+		System.out.println(playerXTextOffset);
+		playerSheetPos.setRegion(playerXTextOffset, 0, 22, 38);
 		playerXpos = (cameraXPos + cameraYPos + screen.getScreenWidth())/2 -11;
 		playerYpos = (cameraYPos + cameraYPos + screen.getScreenHeight())/2 - 19;
 		world.setProjectionMatrix(cam.combined);
@@ -93,25 +77,25 @@ public class DustGame extends ApplicationAdapter {
 	}
 
 	void handleInput(){
-		if(Gdx.input.isKeyPressed(Input.Keys.D)||Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			cameraXPos += 0.3;
-			cam.translate((float) 0.3, 0, 0);
-			playerDir = 0;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.A)||Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			cameraXPos -= 0.3;
-			cam.translate((float) -0.3, 0, 0);
-			playerDir = 180;
-		}
 		if(Gdx.input.isKeyPressed(Input.Keys.W)||Gdx.input.isKeyPressed(Input.Keys.UP)){
 			cameraYPos += 0.3;
 			cam.translate( 0, (float) 0.3, 0);
-			playerDir = 270;
+			playerXTextOffset = 44;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S)||Gdx.input.isKeyPressed(Input.Keys.DOWN)){
 			cameraXPos -= 0.3;
 			cam.translate(0, (float) -0.3, 0);
-			playerDir = 90;
+			playerXTextOffset = 66;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.D)||Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			cameraXPos += 0.3;
+			cam.translate((float) 0.3, 0, 0);
+			playerXTextOffset = 22;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.A)||Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			cameraXPos -= 0.3;
+			cam.translate((float) -0.3, 0, 0);
+			playerXTextOffset = 0;
 		}
 	}
 	
