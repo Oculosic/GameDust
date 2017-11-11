@@ -16,34 +16,71 @@ public class DustGame extends ApplicationAdapter {
 	TextureRegion playerSheetPos;
 	SpriteBatch dagger;
 	Texture daggerI;
-	static final int WORLD_WIDTH = 100;
-	static final int WORLD_HEIGHT = 100;
+	static final int WORLD_WIDTH = 1000;
+	static final int WORLD_HEIGHT = 1000;
 	OrthographicCamera cam;
 	SpriteBatch world;
 	Sprite mapSprite;
-	float rotationSpeed;
-	
+	int cameraXPos;
+	int cameraYPos;
+	float w;
+	float h;
+	float playerXpos;
+	float playerYpos;
+	int playerDir;
+	int playerXTextOffset;
+	int playerYTextOffset;
+
+
 	@Override
 	public void create () {
 		mapSprite = new Sprite(new Texture(Gdx.files.internal("REALGROUND.png")));
-		mapSprite.setPosition(0, 0);
+		mapSprite.setPosition(-500, -500);
 		mapSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
+
 		cam = new OrthographicCamera(30, 30 * (h / w));
 		cam.update();
 		world = new SpriteBatch();
 		player = new SpriteBatch();
 		playerI = new Texture("CCsprite.png");
-		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 40);
+		switch(playerDir){
+			case 0:
+				playerXTextOffset = 0;
+				playerYTextOffset = 0;
+				break;
+			case 90:
+				playerXTextOffset = 0;
+				playerYTextOffset = 0;
+				break;
+			case 180:
+				playerXTextOffset = 0;
+				playerYTextOffset = 0;
+				break;
+			case 270:
+				playerXTextOffset = 0;
+				playerYTextOffset = 0;
+				break;
+		}
+		playerSheetPos = new TextureRegion(playerI, 0, 0, 22, 38);
 		dagger = new SpriteBatch();
 		daggerI = new Texture("THETRUEKNIFE.png");
+	}
+
+	@Override
+	public void resize(int width, int height){
+		cam.viewportWidth = 30f;
+		cam.viewportHeight = 30f * height/width;
+		cam.update();
 	}
 
 	@Override
 	public void render () {
 		handleInput();
 		cam.update();
+		playerXpos = (cameraXPos + cameraYPos + screen.getScreenWidth())/2 -11;
+		playerYpos = (cameraYPos + cameraYPos + screen.getScreenHeight())/2 - 19;
 		world.setProjectionMatrix(cam.combined);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -51,22 +88,30 @@ public class DustGame extends ApplicationAdapter {
 		mapSprite.draw(world);
 		world.end();
 		player.begin();
-		player.draw(playerSheetPos, screen.getScreenWidth()/2 - 11, screen.getScreenHeight()/2 - 20);
+		player.draw(playerSheetPos, playerXpos, playerYpos);
 		player.end();
 	}
 
 	void handleInput(){
-		if(Gdx.input.isKeyPressed(Input.Keys.D)){
+		if(Gdx.input.isKeyPressed(Input.Keys.D)||Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			cameraXPos += 0.3;
 			cam.translate((float) 0.3, 0, 0);
+			playerDir = 0;
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.A)){
+		if(Gdx.input.isKeyPressed(Input.Keys.A)||Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			cameraXPos -= 0.3;
 			cam.translate((float) -0.3, 0, 0);
+			playerDir = 180;
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.W)){
+		if(Gdx.input.isKeyPressed(Input.Keys.W)||Gdx.input.isKeyPressed(Input.Keys.UP)){
+			cameraYPos += 0.3;
 			cam.translate( 0, (float) 0.3, 0);
+			playerDir = 270;
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S)){
+		if(Gdx.input.isKeyPressed(Input.Keys.S)||Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			cameraXPos -= 0.3;
 			cam.translate(0, (float) -0.3, 0);
+			playerDir = 90;
 		}
 	}
 	
